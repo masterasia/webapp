@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.webapp.oss.dao.SysOssDao">
+
+	<select id="queryObject" resultType="com.webapp.webapp.oss.entity.SysOssEntity">
+		select * from sys_oss where OSSID = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.webapp.webapp.oss.entity.SysOssEntity">
+		select * from sys_oss order by OSSID desc
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_oss 
+	</select>
+	 
+	<insert id="save" parameterType="com.webapp.webapp.oss.entity.SysOssEntity">
+		insert into sys_oss
+		(
+			OSSID,
+			url, 
+			create_date
+		)
+		values
+		(
+		    sys_seq.nextval,
+			#{url}, 
+			#{createDate}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.webapp.webapp.oss.entity.SysOssEntity">
+		update sys_oss 
+		<set>
+			<if test="url != null">url = #{url}, </if>
+			<if test="createDate != null">create_date = #{createDate}</if>
+		</set>
+		where OSSID = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_oss where ossid = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_oss where ossid in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

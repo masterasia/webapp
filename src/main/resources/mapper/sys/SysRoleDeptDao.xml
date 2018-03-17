@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.webapp.sys.dao.SysRoleDeptDao">
+
+	<insert id="save">
+		insert into sys_role_dept
+		(
+			RELA_ID,
+			role_id, 
+			dept_id
+		)
+		select SYS_SEQ.NEXTVAL, cd.* from(
+		<foreach collection="deptIdList" item="item" index="index" separator="union all" >
+			select
+			#{roleId}, 
+			#{item}
+			from dual
+		</foreach>
+		) cd
+	</insert>
+	
+	<delete id="delete">
+		delete from sys_role_dept where role_id = #{value}
+	</delete>
+	
+	<select id="queryDeptIdList" resultType="long">
+		select dept_id from sys_role_dept where role_id = #{value}
+	</select>
+
+
+	<delete id="deleteBatch">
+		delete from sys_role_dept where role_id in
+		<foreach item="roleId" collection="array" open="(" separator="," close=")">
+			#{roleId}
+		</foreach>
+	</delete>
+</mapper>

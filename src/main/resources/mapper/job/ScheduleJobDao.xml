@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.webapp.job.dao.ScheduleJobDao">
+	<select id="queryObject" resultType="com.webapp.webapp.job.entity.ScheduleJobEntity" >
+		select * from schedule_job where jobId = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.webapp.webapp.job.entity.ScheduleJobEntity" >
+		select * from schedule_job
+		<where>
+			<if test="beanName != null and beanName.trim() != ''">
+				beanName like concat('%', #{beanName}, '%')
+			</if>
+		</where>
+	</select>
+
+ 	<select id="queryTotal" resultType="int">
+		select count(1) from schedule_job
+		<where>
+			<if test="beanName != null and beanName.trim() != ''">
+				beanName like concat('%', #{beanName}, '%')
+			</if>
+		</where>
+	</select>
+
+	<insert id="save" parameterType="com.webapp.webapp.job.entity.ScheduleJobEntity">
+		insert into schedule_job
+		(
+			jobId,
+			beanName,
+			methodName,
+			params,
+			cronExpression,
+			status,
+			remark,
+			createTime
+		)
+		values
+		(
+		    sys_seq.nextval,
+			#{beanName},
+			#{methodName},
+			#{params},
+			#{cronExpression},
+			#{status},
+			#{remark},
+			#{createTime}
+		)
+	</insert>
+
+	<update id="update" parameterType="com.webapp.webapp.job.entity.ScheduleJobEntity">
+		update schedule_job
+		<set>
+			<if test="beanName != null">beanName = #{beanName}, </if>
+			<if test="methodName != null">methodName = #{methodName}, </if>
+			<if test="params != null">params = #{params}, </if>
+			<if test="cronExpression != null">cronExpression = #{cronExpression}, </if>
+			<if test="status != null">status = #{status}, </if>
+			<if test="remark != null">remark = #{remark}, </if>
+		</set>
+		where jobId = #{jobId}
+	</update>
+
+	<!-- 批量更新状态 -->
+	<update id="updateBatch">
+		update schedule_job set status = #{status} where jobId in
+		<foreach item="jobId" collection="list"  open="(" separator="," close=")">
+			#{jobId}
+		</foreach>
+	</update>
+
+	<delete id="deleteBatch">
+		delete from schedule_job where jobId in
+		<foreach item="jobId" collection="array" open="(" separator="," close=")">
+			#{jobId}
+		</foreach>
+	</delete>
+</mapper>

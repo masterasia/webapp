@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.webapp.webapp.sys.dao.SysLogDao">
+
+	<select id="queryObject" resultType="com.webapp.webapp.sys.entity.SysLogEntity">
+		select * from sys_log where log_id = #{value}
+	</select>
+
+	<select id="queryList" resultType="com.webapp.webapp.sys.entity.SysLogEntity">
+		select * from sys_log 
+		<where>
+			<if test="key != null and key.trim() != ''">
+				username like concat('%',#{key},'%') or operation like concat('%',#{key},'%')
+			</if>
+		</where>
+		order by log_id desc
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from sys_log 
+		<where>
+			<if test="key != null and key.trim() != ''">
+				username like concat('%',#{key},'%') or operation like concat('%',#{key},'%')
+			</if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.webapp.webapp.sys.entity.SysLogEntity">
+		insert into sys_log
+		(
+			log_id,
+			username, 
+			operation, 
+			method, 
+			params,
+			executeTime,
+			ip,
+			create_date
+		)
+		values
+		(
+		    sys_seq.nextval,
+			#{username},
+			#{operation},
+			#{method},
+			#{params},
+			#{executeTime},
+			#{ip},
+			#{createDate}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.webapp.webapp.sys.entity.SysLogEntity">
+		update sys_log 
+		<set>
+			<if test="username != null">username = #{username}, </if>
+			<if test="operation != null">operation = #{operation}, </if>
+			<if test="method != null">method = #{method}, </if>
+			<if test="params != null">params = #{params}, </if>
+			<if test="ip != null">ip = #{ip} </if>
+		</set>
+		where log_id = #{logId}
+	</update>
+	
+	<delete id="delete">
+		delete from sys_log where log_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from sys_log where log_id in
+		<foreach item="logId" collection="array" open="(" separator="," close=")">
+			#{logId}
+		</foreach>
+	</delete>
+
+</mapper>

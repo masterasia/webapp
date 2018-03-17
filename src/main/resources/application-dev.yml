@@ -1,0 +1,53 @@
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: oracle.jdbc.driver.OracleDriver
+        druid:
+            url: jdbc:oracle:thin:@IP:1521:ID
+            username: name
+            password: password
+            initial-size: 10
+            max-active: 100
+            min-idle: 10
+            max-wait: 60000
+            pool-prepared-statements: true
+            max-pool-prepared-statement-per-connection-size: 20
+            time-between-eviction-runs-millis: 60000
+            min-evictable-idle-time-millis: 300000
+            validation-query: SELECT 1 FROM DUAL
+            test-while-idle: true
+            test-on-borrow: false
+            test-on-return: false
+            stat-view-servlet:
+                enabled: true
+                url-pattern: /druid/*
+                #login-username: admin
+                #login-password: admin
+            filter:
+                stat:
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+
+sys:
+    redis:
+        open: true  # 是否开启redis缓存  true开启   false关闭
+    schedule:
+        open: true
+        schedulerName: Scheduler
+        startupDelay: 30
+        overwriteExistingJobs: true
+        autoStartup: true
+    session:
+        globalSessionTimeout: 1800000
+        sessionValidationSchedulerEnabled: true
+        sessionIdUrlRewritingEnabled: false
+    shiro:
+        open: true  # 是否开启shiro管理
+        redis: false # true表示shiro session存到redis里，需要开启redis，才会生效【分布式场景】
+        loginUrl: /redirect.html
+        unauthorizedUrl: /
+        anon: /statics/**;/swagger/**;/service/**;/snapshot/**;/open/**;/login.html;/sys/login;/sys/login/backdoor;/favicon.ico;/captcha.jpg
